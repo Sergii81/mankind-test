@@ -7,8 +7,6 @@ use Generator;
 
 class Mankind
 {
-    /** @var false|resource */
-    private $file;
     /** @var array */
     private array $humans;
     /** @var Mankind|null */
@@ -108,12 +106,12 @@ class Mankind
      */
     public function readCsv(string $fileName, string $delimiter = ';'): Generator
     {
-        $this->file = fopen($fileName, "r");
-        if ($this->file !== false) {
-            while (($data = fgetcsv($this->file, 0, $delimiter)) !== false) {
+        $file = fopen($fileName, "r");
+        if ($file !== false) {
+            while (($data = fgetcsv($file, 0, $delimiter)) !== false) {
                 yield $data;
             }
-            fclose($this->file);
+            fclose($file);
         }
     }
 }
