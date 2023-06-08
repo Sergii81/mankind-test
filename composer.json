@@ -1,0 +1,15 @@
+{
+    "name": "sergii/mankind-test",
+    "autoload": {
+        "psr-4": {
+            "Sergii\\MankindTest\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Sergii81",
+            "email": "sezik1@gmail.com"
+        }
+    ],
+    "require": {}
+}
