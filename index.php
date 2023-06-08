@@ -4,6 +4,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 use Sergii\MankindTest\Mankind;
 
+/** @var Mankind $mankind */
 $mankind = Mankind::getInstance();
 echo 'percent of men - ' . $mankind->getThePercentageOfMenInMankind() .  '%' . "\n";
 

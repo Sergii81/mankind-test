@@ -3,6 +3,7 @@
 namespace Sergii\MankindTest;
 
 use Exception;
+use Generator;
 
 class Mankind
 {
@@ -14,20 +15,19 @@ class Mankind
     private static ?Mankind $instance = null;
     /** @var string  */
     public const MAN = 'M';
+    /** @var Generator  */
+    private Generator $generator;
 
     protected function __construct()
     {
-        $this->file = fopen("src/humans.csv", "r");
-        if ($this->file !== false) {
-            while (($data = fgetcsv($this->file, 1000, ';')) !== false) {
-                $this->humans[$data[0]] = [
-                    'name' => $data[1],
-                    'surname' => $data[2],
-                    'sex' => $data[3],
-                    'birthDate' => $data[4]
-                ];
-            }
-            fclose($this->file);
+        $this->generator = $this->readCsv('src/humans.csv');
+        foreach ($this->generator as $data) {
+            $this->humans[$data[0]] = [
+                'name' => $data[1],
+                'surname' => $data[2],
+                'sex' => $data[3],
+                'birthDate' => $data[4]
+            ];
         }
     }
 
@@ -98,6 +98,22 @@ class Mankind
                     return $person->toArray();
                 }
             }
+        }
+    }
+
+    /**
+     * @param string $fileName
+     * @param string $delimiter
+     * @return Generator
+     */
+    public function readCsv(string $fileName, string $delimiter = ';'): Generator
+    {
+        $this->file = fopen($fileName, "r");
+        if ($this->file !== false) {
+            while (($data = fgetcsv($this->file, 0, $delimiter)) !== false) {
+                yield $data;
+            }
+            fclose($this->file);
         }
     }
 }
