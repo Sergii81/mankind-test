@@ -3,11 +3,8 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use Sergii\MankindTest\Mankind;
-use Sergii\MankindTest\Person;
 
-
-$person = new Person();
-$mankind = Mankind::getInstance($person);
+$mankind = Mankind::getInstance();
 echo 'percent of men - ' . $mankind->getThePercentageOfMenInMankind() .  '%' . "\n";
 
 try {

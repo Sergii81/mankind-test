@@ -1,24 +1,43 @@
 <?php
 
 namespace Sergii\MankindTest;
+
 use DateTime;
 use Exception;
 
 class Person
 {
-    /** @var int */
-    public int $id;
-    /** @var string */
-    public string $name;
-    /** @var string */
-    public string $surname;
-    /** @var string */
-    public string $sex;
-    /** @var string */
-    public string $birthDate;
+    /**
+     * @param int $id
+     * @param string $name
+     * @param string $surname
+     * @param string $sex
+     * @param string $birthDate
+     */
+    public function __construct(
+        public int $id,
+        public string $name,
+        public string $surname,
+        public string $sex,
+        public string $birthDate
+    ) {
+    }
 
-    /** @var string */
-    public const MAN = 'M';
+    /**
+     * @param array $data
+     * @return static
+     */
+    public static function fromArray(array $data): static
+    {
+        return new static(
+            id: $data['id'],
+            name: $data['name'],
+            surname: $data['surname'],
+            sex: $data['sex'],
+            birthDate: $data['birthDate']
+        );
+    }
+
 
     /**
      * @return int
@@ -70,5 +89,13 @@ class Person
         $now = new DateTime();
         $interval = $now->diff($date);
         $this->birthDate = $interval->days;
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return get_object_vars($this);
     }
 }

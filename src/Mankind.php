@@ -12,14 +12,11 @@ class Mankind
     private array $humans;
     /** @var Mankind|null */
     private static ?Mankind $instance = null;
+    /** @var string  */
+    public const MAN = 'M';
 
-
-    /**
-     * @param Person $person
-     */
-    protected function __construct(
-        private Person $person
-    ) {
+    protected function __construct()
+    {
         $this->file = fopen("src/humans.csv", "r");
         if ($this->file !== false) {
             while (($data = fgetcsv($this->file, 1000, ';')) !== false) {
@@ -27,7 +24,7 @@ class Mankind
                     'name' => $data[1],
                     'surname' => $data[2],
                     'sex' => $data[3],
-                    'birth_date' => $data[4]
+                    'birthDate' => $data[4]
                 ];
             }
             fclose($this->file);
@@ -50,13 +47,12 @@ class Mankind
     }
 
     /**
-     * @param Person $person
      * @return Mankind|null
      */
-    public static function getInstance(Person $person): ?Mankind
+    public static function getInstance(): ?Mankind
     {
         if (self::$instance === null) {
-            self::$instance = new self($person);
+            self::$instance = new self();
         }
 
         return self::$instance;
@@ -70,13 +66,14 @@ class Mankind
         $countMen = 0;
         if (! empty($this->humans)) {
             foreach ($this->humans as $human) {
-                if ($human['sex'] == $this->person::MAN) {
+                if ($human['sex'] == self::MAN) {
                     $countMen++;
                 }
             }
 
             return $countMen / count($this->humans) * 100;
         } else {
+
             return 0;
         }
     }
@@ -92,34 +89,15 @@ class Mankind
         if (! in_array($id, $humanIds)) {
             throw new Exception('The Person does\'t exist');
         }
-
         foreach (array_chunk($this->humans, 100, true) as $humanChunk) {
             foreach ($humanChunk as $humanId => $human) {
                 if ($id == $humanId) {
-                    $this->person->id = $humanId;
-                    $this->person->name = $human['name'];
-                    $this->person->surname = $human['surname'];
-                    $this->person->sex = $human['sex'];
-                    $this->person->setBirthDate($human['birth_date']);
+                    $human = array_merge(['id' => $humanId], $human);
+                    $person = Person::fromArray($human);
 
-                    return $this->returnPerson($this->person);
+                    return $person->toArray();
                 }
             }
         }
-    }
-
-    /**
-     * @param Person $person
-     * @return array
-     */
-    public function returnPerson(Person $person): array
-    {
-        return [
-            'id' => $person->getId(),
-            'name' => $person->getName(),
-            'surname' => $person->getSurname(),
-            'sex' => $person->getSex(),
-            'birthDate' => $person->getBirthDate()
-        ];
     }
 }
