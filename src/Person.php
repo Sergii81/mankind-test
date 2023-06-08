@@ -3,7 +3,6 @@
 namespace Sergii\MankindTest;
 
 use DateTime;
-use Exception;
 
 class Person
 {
@@ -12,14 +11,16 @@ class Person
      * @param string $name
      * @param string $surname
      * @param string $sex
-     * @param string $birthDate
+     * @param string $birthDay
+     * @param string $age
      */
     public function __construct(
         public int $id,
         public string $name,
         public string $surname,
         public string $sex,
-        public string $birthDate
+        public string $birthDay,
+        public string $age
     ) {
     }
 
@@ -34,7 +35,8 @@ class Person
             name: $data['name'],
             surname: $data['surname'],
             sex: $data['sex'],
-            birthDate: $data['birthDate']
+            birthDay: $data['birthDate'],
+            age: self::getAgeInDays($data['birthDate'])
         );
     }
 
@@ -50,9 +52,12 @@ class Person
     /**
      * @return string
      */
-    public function getBirthDate(): string
+    /**
+     * @return string
+     */
+    public function getAge(): string
     {
-        return $this->birthDate;
+        return $this->age;
     }
 
     /**
@@ -80,15 +85,24 @@ class Person
     }
 
     /**
-     * @param string $date
-     * @throws Exception
+     * @return string
      */
-    public function setBirthDate(string $date): void
+    public function getBirthDay(): string
+    {
+        return $this->birthDay;
+    }
+
+    /**
+     * @param string $date
+     * @return int|bool
+     */
+    public static function getAgeInDays(string $date): int|bool
     {
         $date = DateTime::createFromFormat('d.m.Y', $date);
         $now = new DateTime();
         $interval = $now->diff($date);
-        $this->birthDate = $interval->days;
+
+        return $interval->days;
     }
 
     /**
