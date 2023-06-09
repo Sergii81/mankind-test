@@ -15,18 +15,12 @@ class Mankind
     public const MAN = 'M';
     /** @var Generator  */
     private Generator $generator;
+    /** @var int  */
+    private int $countMen = 0;
 
     protected function __construct()
     {
-        $this->generator = $this->readCsv('src/humans.csv');
-        foreach ($this->generator as $data) {
-            $this->humans[$data[0]] = [
-                'name' => $data[1],
-                'surname' => $data[2],
-                'sex' => $data[3],
-                'birthDate' => $data[4]
-            ];
-        }
+        $this->init();
     }
 
     /**
@@ -61,15 +55,9 @@ class Mankind
      */
     public function getThePercentageOfMenInMankind(): float|int
     {
-        $countMen = 0;
         if (! empty($this->humans)) {
-            foreach ($this->humans as $human) {
-                if ($human['sex'] == self::MAN) {
-                    $countMen++;
-                }
-            }
 
-            return $countMen / count($this->humans) * 100;
+            return $this->countMen / count($this->humans) * 100;
         } else {
 
             return 0;
@@ -100,6 +88,9 @@ class Mankind
     }
 
     /**
+     * To read large files, we can use the generator.
+     * An example of how to use a generator
+     * $generator = readCsv($fileName);
      * @param string $fileName
      * @param string $delimiter
      * @return Generator
@@ -112,6 +103,29 @@ class Mankind
                 yield $data;
             }
             fclose($file);
+        }
+    }
+
+    /**
+     * @return void
+     */
+    private function init(): void
+    {
+        $this->file = fopen("src/humans.csv", "r");
+        if ($this->file !== false) {
+            while (($data = fgetcsv($this->file, 1000, ';')) !== false) {
+                $this->humans[$data[0]] = [
+                    'name' => $data[1],
+                    'surname' => $data[2],
+                    'sex' => $data[3],
+                    'birthDate' => $data[4]
+                ];
+
+                if ($data[3] == self::MAN) {
+                    $this->countMen++;
+                }
+            }
+            fclose($this->file);
         }
     }
 }
